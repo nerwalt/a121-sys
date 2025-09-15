@@ -32,11 +32,26 @@ pub fn generate_bindings(rss_path: &Path) -> Result<()> {
         }
 
         builder = builder
-            .clang_arg("--target=thumbv7em-none-eabihf")
-            .clang_arg("-mthumb")
-            .clang_arg("-mcpu=cortex-m4")
-            .clang_arg("-mfloat-abi=hard")
-            .clang_arg("-mfpu=fpv4-sp-d16")
+            // M4
+            // .clang_arg("--target=thumbv7em-none-eabihf")
+            // .clang_arg("-mthumb")
+            // .clang_arg("-mcpu=cortex-m4")
+            // .clang_arg("-mfloat-abi=hard")
+            // .clang_arg("-mfpu=fpv4-sp-d16")
+            // M33
+            // .clang_arg("--target=thumbv8m.main-none-eabihf")
+            // .clang_arg("-mthumb")
+            // .clang_arg("-mcpu=cortex-m33")
+            // .clang_arg("-mfloat-abi=hard")
+            // .clang_arg("-mfpu=fpv5-sp-d16")
+            .clang_arg("-target")
+            .clang_arg("arm")
+            .clang_arg("-mcpu=cortex-m33")
+            // Use softfp
+            .clang_arg("-mfloat-abi=soft")
+            // We're no_std
+            .use_core()
+            //
             // Define common macros for embedded systems
             .clang_arg("-D__GNUC__")
             .clang_arg("-D__STDC__=1")
@@ -241,10 +256,20 @@ fn add_log_wrapper(mut bindings: Builder) -> Result<Builder> {
     if target.contains("thumb") || target.contains("arm") {
         build
             .compiler("arm-none-eabi-gcc")
-            .flag("-mcpu=cortex-m4")
+            // M4
+            // .flag("-mcpu=cortex-m4")
+            // .flag("-mthumb")
+            // .flag("-mfloat-abi=hard")
+            // .flag("-mfpu=fpv4-sp-d16");
+            // M33
+            .no_default_flags(true) // prevent cc from using -march
+            .flag("-mcpu=cortex-m33")
             .flag("-mthumb")
             .flag("-mfloat-abi=hard")
-            .flag("-mfpu=fpv4-sp-d16");
+            .flag("-mfpu=fpv5-sp-d16")
+            .flag("-O2")
+            .flag("-ffunction-sections")
+            .flag("-fdata-sections");
     } else if target.contains("riscv32imac-esp-espidf") || target.contains("riscv32imc-esp-espidf")
     {
         build.compiler("riscv32-esp-elf-gcc");

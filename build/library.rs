@@ -58,11 +58,19 @@ pub fn setup_linking(lib_path: &Path) -> Result<()> {
 fn setup_stub_linking() -> Result<()> {
     // Only setup ARM-specific linking for ARM targets
     if cfg!(target_arch = "arm") {
+        // M4 
+        // println!("cargo:rustc-linker=arm-none-eabi-gcc");
+        // println!("cargo:rustc-link-arg=-mcpu=cortex-m4");
+        // println!("cargo:rustc-link-arg=-mthumb");
+        // println!("cargo:rustc-link-arg=-mfloat-abi=hard");
+        // println!("cargo:rustc-link-arg=-mfpu=fpv4-sp-d16");
+        
+        // M33 
         println!("cargo:rustc-linker=arm-none-eabi-gcc");
-        println!("cargo:rustc-link-arg=-mcpu=cortex-m4");
+        println!("cargo:rustc-link-arg=-mcpu=cortex-m33");
         println!("cargo:rustc-link-arg=-mthumb");
         println!("cargo:rustc-link-arg=-mfloat-abi=hard");
-        println!("cargo:rustc-link-arg=-mfpu=fpv4-sp-d16");
+        println!("cargo:rustc-link-arg=-mfpu=fpv5-sp-d16");
     }
     Ok(())
 }
